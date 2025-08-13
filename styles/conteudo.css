@@ -1,0 +1,9 @@
+.conteudo {
+    text-align: center;
+    padding: 2.5em 0;
+}
+
+.conteudo__titulo {
+    font-size: 1.1rem;
+    font-weight: 700;
+}

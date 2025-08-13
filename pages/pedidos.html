@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedidos APP</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+
+<body>
+    <header class="navbar navbar-dark sticky-top bg-primary flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6 text-white" href="#">Pedidos APP</a>
+        <button class="navbar-toggler d-md-none collapsed" type="button" data-bs-toggle="offcanvas"
+            data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div id="sidebar-container"></div>
+
+            <!-- Conteúdo principal -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-3 bg-light">
+                <section class="py-5 text-center container">
+                    <div class="row py-lg-5">
+                        <div class="col-lg-6 col-md-8 mx-auto mb-5">
+                            <h1 class="fw">Pedidos APP</h1>
+                            <p class="display-2">Listagem de Pedidos</p>
+                            <p id="msgEntregar" class="display-6"></p>
+                            <p id="msgReceber" class="display-6"></p>
+                        </div>
+                    </div>
+
+                    <div id="lista-pedidos">
+                        <!-- Cards dos pedidos serão inseridos aqui via JS -->
+                    </div>
+
+                    <!-- Modal Editar Pedido -->
+                    <div class="modal fade" id="modalEditarPedido" tabindex="-1" aria-labelledby="modalEditarPedidoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalEditarPedidoLabel">Editar Pedido</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Observação -->
+        <div class="mb-3">
+          <label for="editObservacao" class="form-label">Observação</label>
+          <textarea class="form-control" id="editObservacao"></textarea>
+        </div>
+
+        <!-- Data de entrega -->
+        <div class="mb-3">
+          <label for="editDataEntrega" class="form-label">Data de entrega</label>
+          <input type="datetime-local" class="form-control" id="editDataEntrega">
+        </div>
+
+        <hr>
+
+        <!-- Adicionar produto -->
+        <div class="row g-2 align-items-end mb-3">
+          <div class="col-6">
+            <label class="form-label">Produto</label>
+            <select id="selectProduto" class="form-select"></select>
+          </div>
+          <div class="col-3">
+            <label class="form-label">Quantidade</label>
+            <input type="number" id="inputQuantidade" class="form-control" min="1" value="1">
+          </div>
+          <div class="col-3">
+            <button id="btnAdicionarProduto" class="btn btn-success w-100">+ Adicionar</button>
+          </div>
+        </div>
+
+        <!-- Lista de produtos -->
+        <ul id="listaProdutosPedido" class="list-group"></ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" id="btnSalvarAlteracoes">Salvar alterações</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+                </section>
+
+                <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="confirmModalLabel">Confirmação</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Fechar"></button>
+                            </div>
+                            <div class="modal-body" id="confirmModalMessage">
+                                Tem certeza que deseja realizar esta ação?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-primary" id="confirmModalBtn">Confirmar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <script src="../scripts/pedidos.js"></script>
+                <script src="../scripts/sidebar.js"></script>
+            </main>
+        </div>
+    </div>
+
+    <footer class="rodape mt-5 text-center py-3 bg-light border-top">
+        <small class="text-muted">© 2025 Dirps Inc.</small>
+    </footer>
+</body>
+
+
+</html>
