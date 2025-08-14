@@ -1,8 +1,3 @@
-let pedidoAtual = null;
-let pedidoEmEdicao = null;
-
-const modalEditar = new bootstrap.Modal(document.getElementById('modalEditarPedido'));
-
 document.addEventListener('DOMContentLoaded', () => {
 
   fetch('http://localhost:8080/pedido/pendentes/contagem')
@@ -108,7 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const titulo = document.createElement('h2');
         titulo.classList.add('my-0', 'fw-normal');
-        titulo.innerText = `Pedido #${pedido.id}`;
+        titulo.innerText = `Pedido #${pedido.idPedido}`;
 
         const btnEditar = document.createElement('button');
         btnEditar.className = 'btn btn-sm btn-light';
@@ -131,14 +126,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const ul = document.createElement('ul');
         ul.classList.add('list-unstyled', 'my-0');
 
-        pedido.produtosPedido.forEach(produto => {
-          ul.innerHTML += `<li>Produto: ${produto.nome} - (${produto.quantidade})</li>`;
-        });
+        ul.innerHTML += `<li><strong>Valor total: R$ ${pedido.valorTotal.toFixed(2)}</strong></li>`;
 
-        const valorTotal = pedido.produtosPedido.reduce((total, prod) => {
-          return total + (prod.valorSugerido * prod.quantidade);
-        }, 0);
-        ul.innerHTML += `<li><strong>Valor total:</strong> R$ ${valorTotal.toFixed(2)}</li>`;
+        pedido.produtosPedido.forEach(produto => {
+          ul.innerHTML += `<li>Produto: ${produto.produtoPedido.nome} - (${produto.produtoPedido.quantidade})</li>`;
+        });
 
         ul.innerHTML += `
           <li>Data de criação: ${formatarDataBrasileira(pedido.dataCriacao)}</li>
@@ -175,95 +167,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     })
     .catch(error => console.error('Erro ao buscar pedidos:', error));
-});
-
-function abrirModalEditarPedido(pedido) {
-  pedidoEmEdicao = pedido;
-
-  // Preenche campos
-  document.getElementById('modalEditarPedidoLabel').textContent = `Editar Pedido #${pedido.id}`;
-  document.getElementById('editObservacao').value = pedido.observacao || '';
-  document.getElementById('editDataEntrega').value = pedido.dataEntrega ? pedido.dataEntrega.substring(0, 16) : '';
-
-  carregarListaProdutos(pedido.produtosPedido);
-  carregarProdutosDisponiveis();
-
-  modalEditar.show();
-}
-
-function carregarListaProdutos(produtos) {
-  const lista = document.getElementById('listaProdutosPedido');
-  lista.innerHTML = '';
-
-  produtos.forEach(prod => {
-    const li = document.createElement('li');
-    li.className = 'list-group-item d-flex justify-content-between align-items-center';
-    li.textContent = `${prod.nome} (${prod.quantidade})`;
-
-    const btnRemover = document.createElement('button');
-    btnRemover.className = 'btn btn-danger btn-sm';
-    btnRemover.textContent = '❌';
-    btnRemover.addEventListener('click', () => removerProdutoDoPedido(prod.idProduto, prod.quantidade));
-
-    li.appendChild(btnRemover);
-    lista.appendChild(li);
-  });
-}
-
-function carregarProdutosDisponiveis() {
-  fetch('http://localhost:8080/produto') // endpoint que lista todos os produtos
-    .then(res => res.json())
-    .then(produtos => {
-      const select = document.getElementById('selectProduto');
-      select.innerHTML = '';
-      produtos.content.forEach(p => {
-        const opt = document.createElement('option');
-        opt.value = p.id;
-        opt.textContent = p.nome;
-        select.appendChild(opt);
-      });
-    });
-}
-
-function removerProdutoDoPedido(idProduto, quantidade) {
-  fetch(`http://localhost:8080/produtosPedido/pedido/${pedidoEmEdicao.id}`, {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ produtosPedidos: [{ idProduto: idProduto, quantidade: quantidade }] })
-  }).then(() => {
-    // Atualiza lista
-    pedidoEmEdicao.produtosPedido = pedidoEmEdicao.produtosPedido.filter(p => p.idProduto !== idProduto);
-    carregarListaProdutos(pedidoEmEdicao.produtosPedido);
-  });
-}
-
-document.getElementById('btnAdicionarProduto').addEventListener('click', () => {
-  const idProduto = parseInt(document.getElementById('selectProduto').value);
-  const quantidade = parseInt(document.getElementById('inputQuantidade').value);
-
-  fetch(`http://localhost:8080/produtosPedido/pedido/${pedidoEmEdicao.id}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ produtosPedidos: [{ idProduto, quantidade }] })
-  }).then(() => {
-    // Adiciona localmente também
-    pedidoEmEdicao.produtosPedido.push({ idProduto, nome: document.querySelector(`#selectProduto option[value="${idProduto}"]`).textContent, quantidade });
-    carregarListaProdutos(pedidoEmEdicao.produtosPedido);
-  });
-});
-
-document.getElementById('btnSalvarAlteracoes').addEventListener('click', () => {
-  const observacao = document.getElementById('editObservacao').value;
-  const dataEntrega = document.getElementById('editDataEntrega').value;
-
-  fetch(`http://localhost:8080/pedido/${pedidoEmEdicao.id}`, {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ observacao, dataEntrega })
-  }).then(() => {
-    modalEditar.hide();
-    location.reload();
-  });
 });
 
 function formatarDataBrasileira(dataISO) {
