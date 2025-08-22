@@ -108,7 +108,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const btnEditar = document.createElement('button');
         btnEditar.className = 'btn btn-sm btn-light';
         btnEditar.innerHTML = '✏️ Editar';
-        btnEditar.addEventListener('click', () => abrirModalEditarPedido(pedido));
+
+        // Redireciona para a página de edição
+        btnEditar.addEventListener('click', () => {
+          window.location.href = `editarPedido.html?id=${pedido.idPedido}`;
+        });
 
         header.appendChild(titulo);
         header.appendChild(btnEditar);
